@@ -20,5 +20,5 @@
         "psr-4": {
             "Arrow\\JwtAuth\\": "src"
         }
-    },
+    }
 }
