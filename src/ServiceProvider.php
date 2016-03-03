@@ -2,8 +2,6 @@
 
 namespace Arrow\JwtAuth;
 
-use Guard;
-use UserProvider;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;

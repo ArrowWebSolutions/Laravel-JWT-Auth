@@ -2,7 +2,6 @@
 
 namespace Arrow\JwtAuth;
 
-use User;
 use Illuminate\Contracts\Auth\UserProvider as UserProviderContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\JWT\Parser as JwtParser;
