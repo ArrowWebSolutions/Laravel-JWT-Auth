@@ -43,12 +43,12 @@ class ServiceProvider extends IlluminateServiceProvider
     public function boot(Request $request, JwtParser $jwtParser, Signer $signer)
     {
         Auth::extend('jwt', function($app, $name, array $config) use ($request) {
-            return new JwtGuard(Auth::createUserProvider($config['provider']), $request);
+            return new Guard(Auth::createUserProvider($config['provider']), $request);
         });
 
         Auth::provider('jwt', function($app, array $config) use ($jwtParser, $signer) {
             $key = $this->getKey($signer, $config);
-            return new JwtUserProvider($jwtParser, $signer, $key);
+            return new UserProvider($jwtParser, $signer, $key);
         });
 
         $this->publishes([
