@@ -17,13 +17,21 @@ class ServiceProvider extends IlluminateServiceProvider
 
     public function register()
     {
-        $this->app->bind(Signer::class, $this->getSigner($this->app->config['auth']['providers']['jwt']));
+        if (isset($this->app->config['jwt-auth']))
+        {
+            //merge our config into auth
+            $this->app->config['auth'] = array_replace_recursive(
+                $this->app->config['auth'],
+                $this->app->config['jwt-auth']
+            );
 
-        //merge our config into auth
-        $this->app->config['auth'] = array_replace_recursive(
-            $this->app->config['auth'],
-            $this->app->config['jwt-auth']
-        );
+            $this->app->bind(Signer::class, $this->getSigner($this->app->config['auth']['providers']['jwt']));
+        }
+        else
+        {
+            //temporarily bind to this - it allows us to call vendor:publish
+            $this->app->bind(Signer::class, \Lcobucci\JWT\Signer\Hmac\Sha512::class);
+        }
     }
 
     /**
