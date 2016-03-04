@@ -12,7 +12,7 @@ class Guard implements GuardContract
 {
     use GuardHelpers;
 
-    protected $request, $provider;
+    protected $request;
 
     public function __construct(UserProvider $provider, Request $request)
     {
