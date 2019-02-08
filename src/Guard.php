@@ -75,6 +75,6 @@ class Guard implements GuardContract
      */
     public function setUser(Authenticatable $user)
     {
-        die('setting user');
+        $this->user = $user;
     }
 }
