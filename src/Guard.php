@@ -6,7 +6,6 @@ use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Guard as GuardContract;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Http\Request;
 
 class Guard implements GuardContract
 {
@@ -14,9 +13,9 @@ class Guard implements GuardContract
 
     protected $request;
 
-    public function __construct(UserProvider $provider, Request $request)
+    public function __construct(UserProvider $provider)
     {
-        $this->request = $request;
+        $this->request = request();
         $this->provider = $provider;
     }
 
