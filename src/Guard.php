@@ -26,14 +26,15 @@ class Guard implements GuardContract
      */
     public function user()
     {
-        if (! is_null($this->user)) return $this->user;
+        if (! is_null($this->user)) {
+            return $this->user;
+        }
 
         $user = null;
 
         $token = $this->getTokenForRequest();
 
-        if (! empty($token))
-        {
+        if (! empty($token)) {
             $user = $this->provider->retrieveByCredentials(['jwt' => $token]);
         }
 
