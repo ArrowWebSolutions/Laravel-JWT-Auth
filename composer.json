@@ -20,5 +20,12 @@
         "psr-4": {
             "Arrow\\JwtAuth\\": "src"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Arrow\\JwtAuth\\ServiceProvider"
+            ]
+        }
     }
 }
