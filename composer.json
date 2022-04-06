@@ -46,7 +46,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Arrow\\JwtAuth\\Tests\\": "tests"
         }
     },
     "scripts": {

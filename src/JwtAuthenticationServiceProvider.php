@@ -7,25 +7,25 @@ use Illuminate\Http\Request;
 use Lcobucci\JWT\Signer\Key;
 use Illuminate\Support\Facades\Auth;
 use Lcobucci\JWT\Parser as JwtParser;
+use Spatie\LaravelPackageTools\Package;
+use Arrow\JwtAuth\Commands\Publish\Config;
+use Lcobucci\JWT\Signer\Ecdsa\SignatureConverter;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Lcobucci\JWT\Signer\Ecdsa\MultibyteStringConverter;
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
-use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
-class JwtAuthenticationServiceProvider extends IlluminateServiceProvider
+class JwtAuthenticationServiceProvider extends PackageServiceProvider
 {
+    public function configurePackage(Package $package): void
+    {
+        $package->name('laravel-jwt-auth')
+            ->hasCommand(Config::class)
+            ->hasConfigFile('jwt-auth');
+    }
+
     public function register()
     {
-        if (isset($this->app->config['jwt-auth'])) {
-            //merge our config into auth
-            $this->app->config['auth'] = array_replace_recursive(
-                $this->app->config['auth'],
-                $this->app->config['jwt-auth']
-            );
-
-            $this->app->bind(Signer::class, $this->getSigner($this->app->config['auth']['providers']['jwt']));
-        } else {
-            //temporarily bind to this - it allows us to call vendor:publish
-            $this->app->bind(Signer::class, \Lcobucci\JWT\Signer\Hmac\Sha512::class);
-        }
+        parent::register();
     }
 
     /**
@@ -34,8 +34,25 @@ class JwtAuthenticationServiceProvider extends IlluminateServiceProvider
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function boot(Request $request)//, JwtParser $jwtParser, Signer $signer)
+    public function boot()//Request $request, JwtParser $jwtParser, Signer $signer)
     {
+        parent::boot();
+        if (isset($this->app->config['jwt-auth'])) {
+            //merge our config into auth
+            $this->app->config['auth'] = array_replace_recursive(
+                $this->app->config['auth'],
+                $this->app->config['jwt-auth']
+            );
+
+            $this->app->bind(Signer::class, $this->getSigner($this->app->config['auth']['providers']['jwt']));
+            if ($this->app['config']->get('auth.providers.jwt.signature') === 'ecdsa') {
+                $this->app->bind(SignatureConverter::class, MultibyteStringConverter::class);
+            }
+        } else {
+            //temporarily bind to this - it allows us to call vendor:publish
+            $this->app->bind(Signer::class, \Lcobucci\JWT\Signer\Hmac\Sha512::class);
+        }
+
         // Auth::extend('jwt', function ($app, $name, array $config) use ($request) {
         //     return new Guard(Auth::createUserProvider($config['provider']), $request);
         // });
