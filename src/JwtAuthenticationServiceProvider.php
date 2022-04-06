@@ -12,7 +12,6 @@ use Arrow\JwtAuth\Commands\Publish\Config;
 use Lcobucci\JWT\Signer\Ecdsa\SignatureConverter;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Lcobucci\JWT\Signer\Ecdsa\MultibyteStringConverter;
-use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 
 class JwtAuthenticationServiceProvider extends PackageServiceProvider
 {
@@ -21,11 +20,6 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
         $package->name('laravel-jwt-auth')
             ->hasCommand(Config::class)
             ->hasConfigFile('jwt-auth');
-    }
-
-    public function register()
-    {
-        parent::register();
     }
 
     /**
@@ -53,18 +47,16 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
             $this->app->bind(Signer::class, \Lcobucci\JWT\Signer\Hmac\Sha512::class);
         }
 
-        // Auth::extend('jwt', function ($app, $name, array $config) use ($request) {
-        //     return new Guard(Auth::createUserProvider($config['provider']), $request);
-        // });
+        Auth::extend('jwt', function ($app, $name, array $config) {
+            return new Guard(Auth::createUserProvider($config['provider']));
+        });
 
-        // Auth::provider('jwt', function ($app, array $config) use ($jwtParser, $signer) {
-        //     $key = $this->getKey($signer, $config);
-        //     return new UserProvider($jwtParser, $signer, $key);
-        // });
-
-        // $this->publishes([
-        //     __DIR__ . '/config/jwt-auth.php' => config_path('jwt-auth.php'),
-        // ]);
+        Auth::provider('jwt', function ($app, array $config) {
+            $signer = $app->make(Signer::class);
+            $jwtParser = $app->make(JwtParser::class);
+            $key = $this->getKey($signer, $config);
+            return new UserProvider($jwtParser, $signer, $key);
+        });
     }
 
     /**
