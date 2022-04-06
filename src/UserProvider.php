@@ -2,13 +2,10 @@
 
 namespace Arrow\JwtAuth;
 
-use Lcobucci\JWT\Signer;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Parser as JwtParser;
-use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
 use Illuminate\Contracts\Auth\UserProvider as UserProviderContract;
+use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
 
 class UserProvider implements UserProviderContract
 {
@@ -60,12 +57,14 @@ class UserProvider implements UserProviderContract
     public function retrieveByCredentials(array $credentials)
     {
         $jwt = $this->jwtConfig->parser()->parse($credentials['jwt']);
+
         try {
             $this->jwtConfig->validator()->assert($jwt, ...$this->jwtConfig->validationConstraints());
         } catch (RequiredConstraintsViolated $e) {
             return null;
         }
-        return (new User)->fromToken($jwt);
+
+        return (new User())->fromToken($jwt);
     }
 
     /**

@@ -2,8 +2,8 @@
 
 namespace Arrow\JwtAuth;
 
-use Lcobucci\JWT\UnencryptedToken;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Lcobucci\JWT\UnencryptedToken;
 
 class User implements Authenticatable
 {
@@ -16,6 +16,7 @@ class User implements Authenticatable
 
         return $this;
     }
+
     /**
      * Get the name of the unique identifier for the user.
      *

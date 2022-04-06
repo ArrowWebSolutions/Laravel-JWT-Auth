@@ -1,4 +1,5 @@
 <?php
+
 namespace Arrow\JwtAuth\Commands\Publish;
 
 use Illuminate\Console\Command;

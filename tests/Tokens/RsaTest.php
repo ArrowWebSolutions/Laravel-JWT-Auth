@@ -1,11 +1,12 @@
 <?php
+
 namespace Arrow\JwtAuth\Tests\Tokens;
 
+use Arrow\JwtAuth\Contracts\JwtConfiguration;
+use Arrow\JwtAuth\Tests\TestCase;
 use DateTimeImmutable;
 use Illuminate\Support\Str;
 use Lcobucci\JWT\Configuration;
-use Arrow\JwtAuth\Tests\TestCase;
-use Arrow\JwtAuth\Contracts\JwtConfiguration;
 
 class RsaTest extends TestCase
 {
