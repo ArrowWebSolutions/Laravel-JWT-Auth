@@ -11,9 +11,8 @@ class User implements Authenticatable
 
     public function fromToken(UnencryptedToken $token)
     {
-        foreach ($token->claims()->all() as $claim) {
-            $name = $claim->getName();
-            $this->$name = $claim->getValue();
+        foreach ($token->claims()->all() as $name => $value) {
+            $this->$name = $value;
         }
 
         return $this;
