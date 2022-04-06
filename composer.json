@@ -2,7 +2,7 @@
     "name": "arrow-web-sol/laravel-jwt-auth",
     "description": "Authenticate users via JWT in Laravel.",
     "require": {
-        "lcobucci/jwt": "~3.1",
+        "lcobucci/jwt": "^4.2",
         "illuminate/auth": "^9.0",
         "illuminate/contracts": "^9.0",
         "illuminate/http": "^9.0",
