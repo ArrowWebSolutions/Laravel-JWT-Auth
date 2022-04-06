@@ -13,6 +13,8 @@ class Guard implements GuardContract
 
     protected $request;
 
+    protected $user;
+
     public function __construct(UserProvider $provider)
     {
         $this->request = request();
@@ -53,7 +55,7 @@ class Guard implements GuardContract
      */
     public function id()
     {
-        return $this->user->id;
+        return $this->user?->id ?? $this->user?->sub;
     }
 
     /**
