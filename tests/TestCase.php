@@ -2,15 +2,14 @@
 
 namespace Arrow\JwtAuth\Tests;
 
-use phpseclib3\Crypt\EC;
-use phpseclib3\Crypt\RSA;
-use Illuminate\Support\Str;
+use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
-use function PHPUnit\Framework\directoryExists;
+use phpseclib3\Crypt\EC;
 
-use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
+use phpseclib3\Crypt\RSA;
 
 class TestCase extends Orchestra
 {
@@ -62,7 +61,7 @@ class TestCase extends Orchestra
 
     protected function putKey($key, $app)
     {
-        if (!file_exists(dirname($app->config->get('jwt-auth.providers.jwt.public-key')))) {
+        if (! file_exists(dirname($app->config->get('jwt-auth.providers.jwt.public-key')))) {
             mkdir(dirname($app->config->get('jwt-auth.providers.jwt.public-key')));
         }
         file_put_contents($app->config->get('jwt-auth.providers.jwt.public-key'), (string) $key->getPublicKey());
