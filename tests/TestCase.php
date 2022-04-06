@@ -2,14 +2,14 @@
 
 namespace Arrow\JwtAuth\Tests;
 
-use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
+use phpseclib3\Crypt\EC;
+use phpseclib3\Crypt\RSA;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
-use phpseclib3\Crypt\EC;
 
-use phpseclib3\Crypt\RSA;
+use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -33,7 +33,7 @@ class TestCase extends Orchestra
             });
 
             $router->get('/user', function (Request $request) {
-                return $request->user();
+                return response()->json($request->user());
             });
         });
     }
@@ -43,7 +43,7 @@ class TestCase extends Orchestra
         //we need to set this in the jwt-auth as it'll get merged into auth as part of the boot
         $app['config']->set('jwt-auth.providers.jwt.signature', 'rsa');
         $key = RSA::createKey();
-        $this->putKey($key, $app);
+        $this->putKey((string) $key->getPublicKey(), (string)$key, $app);
     }
 
     protected function useHmacSignature($app)
@@ -55,16 +55,28 @@ class TestCase extends Orchestra
     protected function useEcdsaSignature($app)
     {
         $app['config']->set('jwt-auth.providers.jwt.signature', 'ecdsa');
-        $key = EC::createKey('nistp521');
-        $this->putKey($key, $app);
+        $this->putKey(<<<EOK
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7it/EKmcv9bfpcV1fBreLMRXxWpn
+d0wxa2iFruiI2tsEdGFTLTsyU+GeRqC7zN0aTnTQajarUylKJ3UWr/r1kg==
+-----END PUBLIC KEY-----
+EOK
+        , <<<EOK
+-----BEGIN EC PRIVATE KEY-----
+MHcCAQEEIBGpMoZJ64MMSzuo5JbmXpf9V4qSWdLIl/8RmJLcfn/qoAoGCCqGSM49
+AwEHoUQDQgAE7it/EKmcv9bfpcV1fBreLMRXxWpnd0wxa2iFruiI2tsEdGFTLTsy
+U+GeRqC7zN0aTnTQajarUylKJ3UWr/r1kg==
+-----END EC PRIVATE KEY-----
+EOK
+        , $app);
     }
 
-    protected function putKey($key, $app)
+    protected function putKey($publicKey, $privateKey, $app)
     {
         if (! file_exists(dirname($app->config->get('jwt-auth.providers.jwt.public-key')))) {
             mkdir(dirname($app->config->get('jwt-auth.providers.jwt.public-key')));
         }
-        file_put_contents($app->config->get('jwt-auth.providers.jwt.public-key'), (string) $key->getPublicKey());
-        file_put_contents($app->config->get('jwt-auth.providers.jwt.private-key'), (string) $key);
+        file_put_contents($app->config->get('jwt-auth.providers.jwt.public-key'), $publicKey);
+        file_put_contents($app->config->get('jwt-auth.providers.jwt.private-key'), $privateKey);
     }
 }
