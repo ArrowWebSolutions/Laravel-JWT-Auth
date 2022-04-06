@@ -2,16 +2,16 @@
 
 namespace Arrow\JwtAuth;
 
-use Arrow\JwtAuth\Commands\Publish\Config;
-use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use DateInterval;
-use Illuminate\Support\Facades\Auth;
+use Lcobucci\JWT\Signer;
 use Lcobucci\Clock\FrozenClock;
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer;
+use Illuminate\Support\Facades\Auth;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Validation\Constraint;
 use Spatie\LaravelPackageTools\Package;
+use Arrow\JwtAuth\Commands\Publish\Config;
+use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class JwtAuthenticationServiceProvider extends PackageServiceProvider
@@ -56,6 +56,7 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
             }
 
             $jwtConfig->setValidationConstraints(
+                new Constraint\SignedWith($jwtConfig->signer(), $jwtConfig->verificationKey()),
                 //10 second leeway, this deals with testing and setting up the constraint before the token is generated
                 new Constraint\StrictValidAt(new FrozenClock(now()->toDateTimeImmutable()), DateInterval::createFromDateString('10 seconds')),
             );

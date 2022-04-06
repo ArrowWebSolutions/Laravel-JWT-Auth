@@ -2,11 +2,11 @@
 
 namespace Arrow\JwtAuth\Tests\Tokens;
 
-use Arrow\JwtAuth\Contracts\JwtConfiguration;
-use Arrow\JwtAuth\Tests\TestCase;
 use DateTimeImmutable;
 use Illuminate\Support\Str;
 use Lcobucci\JWT\Configuration;
+use Arrow\JwtAuth\Tests\TestCase;
+use Arrow\JwtAuth\Contracts\JwtConfiguration;
 
 class RsaTest extends TestCase
 {
@@ -79,6 +79,29 @@ class RsaTest extends TestCase
 
         $this
             ->withToken($this->token($now, $now->modify('+1 hour'), $now->modify('+2 hours'))->toString())
+            ->getJson('/')
+            ->assertUnauthorized();
+    }
+
+    /**
+     * @test
+     * @define-env useRsaSignature
+     */
+    public function a_valid_jwt_but_wrong_signature_doesnt_work()
+    {
+        $jwtConfig = Configuration::forUnsecuredSigner();
+        $token = $jwtConfig
+            ->builder()
+            ->issuedBy('https://arrow-web.dev')
+            ->permittedFor('https://example.com')
+            ->identifiedBy(Str::random(12))
+            ->issuedAt(now()->toDateTimeImmutable())
+            ->canOnlyBeUsedAfter(now()->toDateTimeImmutable())
+            ->expiresAt(now()->addHours(1)->toDateTimeImmutable())
+            ->getToken($jwtConfig->signer(), $jwtConfig->signingKey());
+
+        $this
+            ->withToken($token->toString())
             ->getJson('/')
             ->assertUnauthorized();
     }
