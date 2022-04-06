@@ -1,24 +1,64 @@
 {
     "name": "arrow-web-sol/laravel-jwt-auth",
     "description": "Authenticate users via JWT in Laravel.",
+    "keywords": [
+        "Arrow Web Solutions",
+        "JWT",
+        "Authentication",
+        "Laravel"
+    ],
+    "homepage": "https://github.com/ArrowWebSolutions/Laravel-JWT-Auth",
     "require": {
+        "php": "^8.1",
         "lcobucci/jwt": "^4.2",
         "illuminate/auth": "^9.0",
         "illuminate/contracts": "^9.0",
         "illuminate/http": "^9.0",
-        "illuminate/support": "^9.0"
+        "illuminate/support": "^9.0",
+        "spatie/laravel-package-tools": "^1.11"
+    },
+    "require-dev": {
+        "nunomaduro/collision": "^6.0",
+        "nunomaduro/larastan": "^2.0.1",
+        "orchestra/testbench": "^7.0",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-laravel": "^1.1",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpunit/phpunit": "^9.5",
+        "spatie/laravel-ray": "^1.26"
     },
     "license": "MIT",
     "authors": [
         {
             "name": "Arron King",
-            "email": "arron.king@arrow-web.dev"
+            "email": "arron.king@arrow-web.dev",
+            "role": "Developer"
         }
     ],
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Arrow\\JwtAuth\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "VendorName\\Skeleton\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "analyse": "vendor/bin/phpstan analyse",
+        "test": "vendor/bin/pest",
+        "test-coverage": "vendor/bin/pest --coverage"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
         }
     },
     "extra": {
