@@ -2,21 +2,19 @@
 
 namespace Arrow\JwtAuth;
 
+use Lcobucci\JWT\Signer;
 use Illuminate\Http\Request;
-use Illuminate\Contracts\Auth\Access\Gate as GateContract;
-use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
+use Lcobucci\JWT\Signer\Key;
 use Illuminate\Support\Facades\Auth;
 use Lcobucci\JWT\Parser as JwtParser;
-use Lcobucci\JWT\Signer;
-use Lcobucci\JWT\Signer\Key;
+use Illuminate\Contracts\Auth\Access\Gate as GateContract;
+use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
-class ServiceProvider extends IlluminateServiceProvider
+class JwtAuthenticationServiceProvider extends IlluminateServiceProvider
 {
-
     public function register()
     {
-        if (isset($this->app->config['jwt-auth']))
-        {
+        if (isset($this->app->config['jwt-auth'])) {
             //merge our config into auth
             $this->app->config['auth'] = array_replace_recursive(
                 $this->app->config['auth'],
@@ -24,9 +22,7 @@ class ServiceProvider extends IlluminateServiceProvider
             );
 
             $this->app->bind(Signer::class, $this->getSigner($this->app->config['auth']['providers']['jwt']));
-        }
-        else
-        {
+        } else {
             //temporarily bind to this - it allows us to call vendor:publish
             $this->app->bind(Signer::class, \Lcobucci\JWT\Signer\Hmac\Sha512::class);
         }
@@ -38,20 +34,20 @@ class ServiceProvider extends IlluminateServiceProvider
      * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function boot(Request $request, JwtParser $jwtParser, Signer $signer)
+    public function boot(Request $request)//, JwtParser $jwtParser, Signer $signer)
     {
-        Auth::extend('jwt', function($app, $name, array $config) use ($request) {
-            return new Guard(Auth::createUserProvider($config['provider']), $request);
-        });
+        // Auth::extend('jwt', function ($app, $name, array $config) use ($request) {
+        //     return new Guard(Auth::createUserProvider($config['provider']), $request);
+        // });
 
-        Auth::provider('jwt', function($app, array $config) use ($jwtParser, $signer) {
-            $key = $this->getKey($signer, $config);
-            return new UserProvider($jwtParser, $signer, $key);
-        });
+        // Auth::provider('jwt', function ($app, array $config) use ($jwtParser, $signer) {
+        //     $key = $this->getKey($signer, $config);
+        //     return new UserProvider($jwtParser, $signer, $key);
+        // });
 
-        $this->publishes([
-            __DIR__ . '/config/jwt-auth.php' => config_path('jwt-auth.php'),
-        ]);
+        // $this->publishes([
+        //     __DIR__ . '/config/jwt-auth.php' => config_path('jwt-auth.php'),
+        // ]);
     }
 
     /**
@@ -67,8 +63,7 @@ class ServiceProvider extends IlluminateServiceProvider
 
     protected function getKey($signer, $config)
     {
-        switch (strtoupper(substr($signer->getAlgorithmId(), 0, 2)))
-        {
+        switch (strtoupper(substr($signer->getAlgorithmId(), 0, 2))) {
             case "HS":
                 return $config['key'];
                 break;
