@@ -2,19 +2,19 @@
 
 namespace Arrow\JwtAuth;
 
-use Arrow\JwtAuth\Commands\Publish\Config;
-use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use DateInterval;
+use Lcobucci\JWT\Signer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Lcobucci\JWT\Signer\Key;
 use Lcobucci\Clock\FrozenClock;
 use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer;
-use Lcobucci\JWT\Signer\Key;
+use Illuminate\Support\Facades\Auth;
 use Lcobucci\JWT\Signer\Key\InMemory;
-use Lcobucci\JWT\Token\Parser as JwtParser;
 use Lcobucci\JWT\Validation\Constraint;
 use Spatie\LaravelPackageTools\Package;
+use Arrow\JwtAuth\Commands\Publish\Config;
+use Lcobucci\JWT\Token\Parser as JwtParser;
+use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class JwtAuthenticationServiceProvider extends PackageServiceProvider
@@ -29,27 +29,26 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
     /**
      * Register any application authentication / authorization services.
      *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      * @return void
      */
-    public function boot()//Request $request, JwtParser $jwtParser, Signer $signer)
+    public function boot()
     {
         parent::boot();
 
         //merge our config into auth
-        $this->app->config['auth'] = array_replace_recursive(
-            $this->app->config['auth'],
-            $this->app->config['jwt-auth']
+        $this->app['config']['auth'] = array_replace_recursive(
+            $this->app['config']['auth'],
+            $this->app['config']['jwt-auth']
         );
 
-        $this->app->singleton(JwtConfiguration::class, function () {
-            $config = $this->app->config->get('auth.providers.jwt');
+        $this->app->bind(JwtConfiguration::class, function ($app) {
+            $config = $app['config']->get('auth.providers.jwt');
             $signer = $this->getSigner($config);
             $jwtConfig = null;
             if ($config['signature'] === 'hmac') {
                 $jwtConfig = Configuration::forSymmetricSigner(
                     $signer,
-                    InMemory::plainText($this->getKey($signer, $config))
+                    InMemory::plainText($config['key'])
                 );
             } else {
                 $jwtConfig = Configuration::forAsymmetricSigner(
@@ -78,7 +77,7 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
 
     /**
      * This is baddd - redo this
-     * @return [type] [description]
+     * @return Signer gets a signer based on the config
      */
     protected function getSigner($config): Signer
     {
@@ -89,20 +88,5 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
         }
 
         return app()->make($func->getName());
-    }
-
-    protected function getKey($signer, $config)
-    {
-        switch (strtoupper(substr($signer->algorithmId(), 0, 2))) {
-            case "HS":
-                return $config['key'];
-
-                break;
-            case "RS":
-            case "ES":
-                return new Key($config['public-key']);
-
-                break;
-        }
     }
 }
