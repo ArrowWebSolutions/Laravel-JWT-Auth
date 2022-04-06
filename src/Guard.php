@@ -3,9 +3,9 @@
 namespace Arrow\JwtAuth;
 
 use Illuminate\Auth\GuardHelpers;
-use Illuminate\Contracts\Auth\Guard as GuardContract;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Guard as GuardContract;
 
 class Guard implements GuardContract
 {
@@ -64,7 +64,7 @@ class Guard implements GuardContract
      */
     public function validate(array $credentials = [])
     {
-        die('validating');
+        throw new \Exception("Not implemented");
     }
 
     /**

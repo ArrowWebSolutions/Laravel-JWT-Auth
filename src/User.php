@@ -2,15 +2,14 @@
 
 namespace Arrow\JwtAuth;
 
+use Lcobucci\JWT\UnencryptedToken;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Lcobucci\JWT\Token;
 
 class User implements Authenticatable
 {
-    public function fromToken(Token $token)
+    public function fromToken(UnencryptedToken $token)
     {
-        foreach ($token->getClaims() as $claim)
-        {
+        foreach ($token->claims() as $claim) {
             $name = $claim->getName();
             $this->$name = $claim->getValue();
         }

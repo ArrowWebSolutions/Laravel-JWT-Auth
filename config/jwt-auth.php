@@ -17,8 +17,10 @@ return [
             'hash' => 'sha256',
             //the key used for HMAC signatures
             'key' => 'my-super-secret',
-            //path to public key, needs prefixed with file://
-            'public-key' => 'file://' . storage_path('auth/jwt-public.key'),
+            //path to public key
+            'public-key' => storage_path('auth/jwt-public.key'),
+            //path to private key, not needed for authentication
+            'private-key' => storage_path('auth/jwt-private.key'),
         ],
     ],
 ];

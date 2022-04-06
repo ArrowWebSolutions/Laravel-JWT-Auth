@@ -2,13 +2,21 @@
 
 namespace Arrow\JwtAuth;
 
+use DateInterval;
+use DateTimeImmutable;
 use Lcobucci\JWT\Signer;
+use Lcobucci\Clock\Clock;
 use Illuminate\Http\Request;
 use Lcobucci\JWT\Signer\Key;
+use Lcobucci\Clock\FrozenClock;
+use Lcobucci\JWT\Configuration;
 use Illuminate\Support\Facades\Auth;
-use Lcobucci\JWT\Parser as JwtParser;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Validation\Constraint;
 use Spatie\LaravelPackageTools\Package;
 use Arrow\JwtAuth\Commands\Publish\Config;
+use Lcobucci\JWT\Token\Parser as JwtParser;
+use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use Lcobucci\JWT\Signer\Ecdsa\SignatureConverter;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Lcobucci\JWT\Signer\Ecdsa\MultibyteStringConverter;
@@ -31,31 +39,43 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
     public function boot()//Request $request, JwtParser $jwtParser, Signer $signer)
     {
         parent::boot();
-        if (isset($this->app->config['jwt-auth'])) {
-            //merge our config into auth
-            $this->app->config['auth'] = array_replace_recursive(
-                $this->app->config['auth'],
-                $this->app->config['jwt-auth']
-            );
 
-            $this->app->bind(Signer::class, $this->getSigner($this->app->config['auth']['providers']['jwt']));
-            if ($this->app['config']->get('auth.providers.jwt.signature') === 'ecdsa') {
-                $this->app->bind(SignatureConverter::class, MultibyteStringConverter::class);
+        //merge our config into auth
+        $this->app->config['auth'] = array_replace_recursive(
+            $this->app->config['auth'],
+            $this->app->config['jwt-auth']
+        );
+
+        $this->app->singleton(JwtConfiguration::class, function () {
+            $config = $this->app->config->get('auth.providers.jwt');
+            $signer = $this->getSigner($config);
+            $jwtConfig = null;
+            if ($config['signature'] === 'hmac') {
+                $jwtConfig = Configuration::forSymmetricSigner(
+                    $signer,
+                    InMemory::plainText($this->getKey($signer, $config))
+                );
+            } else {
+                $jwtConfig = Configuration::forAsymmetricSigner(
+                    $signer,
+                    file_exists($config['private-key']) ? InMemory::file($config['private-key']) : InMemory::empty(),
+                    file_exists($config['public-key']) ? InMemory::file($config['public-key']) : InMemory::empty()
+                );
             }
-        } else {
-            //temporarily bind to this - it allows us to call vendor:publish
-            $this->app->bind(Signer::class, \Lcobucci\JWT\Signer\Hmac\Sha512::class);
-        }
+
+            $jwtConfig->setValidationConstraints(
+                //10 second leeway, this deals with testing and setting up the constraint before the token is generated
+                new Constraint\StrictValidAt(new FrozenClock(now()->toDateTimeImmutable()), DateInterval::createFromDateString('10 seconds')),
+            );
+            return $jwtConfig;
+        });
 
         Auth::extend('jwt', function ($app, $name, array $config) {
             return new Guard(Auth::createUserProvider($config['provider']));
         });
 
         Auth::provider('jwt', function ($app, array $config) {
-            $signer = $app->make(Signer::class);
-            $jwtParser = $app->make(JwtParser::class);
-            $key = $this->getKey($signer, $config);
-            return new UserProvider($jwtParser, $signer, $key);
+            return new UserProvider($app->make(JwtConfiguration::class));
         });
     }
 
@@ -63,16 +83,19 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
      * This is baddd - redo this
      * @return [type] [description]
      */
-    protected function getSigner($config)
+    protected function getSigner($config): Signer
     {
         $className = "\Lcobucci\JWT\Signer\\" . ucwords($config['signature']) . "\\" . ucwords($config['hash']);
         $func = new \ReflectionClass($className);
-        return $func->getName();
+        if ($config['signature'] === 'ecdsa') {
+            return call_user_func($func->getName() . '::create');
+        }
+        return app()->make($func->getName());
     }
 
     protected function getKey($signer, $config)
     {
-        switch (strtoupper(substr($signer->getAlgorithmId(), 0, 2))) {
+        switch (strtoupper(substr($signer->algorithmId(), 0, 2))) {
             case "HS":
                 return $config['key'];
                 break;

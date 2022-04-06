@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
+
 it('publishes the config file', function () {
     $this->artisan('vendor:publish', [
         '--provider' => 'Arrow\JwtAuth\JwtAuthenticationServiceProvider',
@@ -31,4 +33,20 @@ it('merges the config file into auth', function () {
             'driver' => 'jwt',
             'provider' => 'jwt',
         ]);
+});
+
+it('sets up the guard correctly', function () {
+    expect(Auth::guard('jwt'))
+        ->toBeInstanceOf(\Arrow\JwtAuth\Guard::class);
+});
+
+it('doesnt break the default gaurd', function () {
+    expect(Auth::guard())
+        ->toBeInstanceOf(\Illuminate\Auth\SessionGuard::class);
+});
+
+it('can change the default gaurd when configured', function () {
+    $this->app->config->set('auth.defaults.guard', 'jwt');
+    expect(Auth::guard())
+        ->toBeInstanceOf(\Arrow\JwtAuth\Guard::class);
 });
