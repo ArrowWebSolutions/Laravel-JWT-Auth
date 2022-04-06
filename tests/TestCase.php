@@ -2,13 +2,15 @@
 
 namespace Arrow\JwtAuth\Tests;
 
-use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
-use Illuminate\Http\Request;
-use Illuminate\Routing\Router;
-use Illuminate\Support\Str;
-use Orchestra\Testbench\TestCase as Orchestra;
 use phpseclib3\Crypt\EC;
 use phpseclib3\Crypt\RSA;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
+use Orchestra\Testbench\TestCase as Orchestra;
+use function PHPUnit\Framework\directoryExists;
+
+use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -42,9 +44,7 @@ class TestCase extends Orchestra
         //we need to set this in the jwt-auth as it'll get merged into auth as part of the boot
         $app['config']->set('jwt-auth.providers.jwt.signature', 'rsa');
         $key = RSA::createKey();
-
-        file_put_contents($app->config->get('jwt-auth.providers.jwt.public-key'), (string) $key->getPublicKey());
-        file_put_contents($app->config->get('jwt-auth.providers.jwt.private-key'), (string) $key);
+        $this->putKey($key, $app);
     }
 
     protected function useHmacSignature($app)
@@ -57,7 +57,14 @@ class TestCase extends Orchestra
     {
         $app['config']->set('jwt-auth.providers.jwt.signature', 'ecdsa');
         $key = EC::createKey('nistp521');
+        $this->putKey($key, $app);
+    }
 
+    protected function putKey($key, $app)
+    {
+        if (!file_exists(dirname($app->config->get('jwt-auth.providers.jwt.public-key')))) {
+            mkdir(dirname($app->config->get('jwt-auth.providers.jwt.public-key')));
+        }
         file_put_contents($app->config->get('jwt-auth.providers.jwt.public-key'), (string) $key->getPublicKey());
         file_put_contents($app->config->get('jwt-auth.providers.jwt.private-key'), (string) $key);
     }
