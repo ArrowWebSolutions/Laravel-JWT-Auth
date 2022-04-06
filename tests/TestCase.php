@@ -2,14 +2,13 @@
 
 namespace Arrow\JwtAuth\Tests;
 
-use phpseclib3\Crypt\EC;
-use phpseclib3\Crypt\DSA;
-use phpseclib3\Crypt\RSA;
-use Illuminate\Support\Str;
+use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
+use phpseclib3\Crypt\EC;
+use phpseclib3\Crypt\RSA;
 
 class TestCase extends Orchestra
 {

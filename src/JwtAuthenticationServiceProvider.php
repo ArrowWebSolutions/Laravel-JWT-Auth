@@ -2,24 +2,20 @@
 
 namespace Arrow\JwtAuth;
 
+use Arrow\JwtAuth\Commands\Publish\Config;
+use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use DateInterval;
-use DateTimeImmutable;
-use Lcobucci\JWT\Signer;
-use Lcobucci\Clock\Clock;
 use Illuminate\Http\Request;
-use Lcobucci\JWT\Signer\Key;
+use Illuminate\Support\Facades\Auth;
 use Lcobucci\Clock\FrozenClock;
 use Lcobucci\JWT\Configuration;
-use Illuminate\Support\Facades\Auth;
+use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Token\Parser as JwtParser;
 use Lcobucci\JWT\Validation\Constraint;
 use Spatie\LaravelPackageTools\Package;
-use Arrow\JwtAuth\Commands\Publish\Config;
-use Lcobucci\JWT\Token\Parser as JwtParser;
-use Arrow\JwtAuth\Contracts\JwtConfiguration;
-use Lcobucci\JWT\Signer\Ecdsa\SignatureConverter;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Lcobucci\JWT\Signer\Ecdsa\MultibyteStringConverter;
 
 class JwtAuthenticationServiceProvider extends PackageServiceProvider
 {
@@ -67,6 +63,7 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
                 //10 second leeway, this deals with testing and setting up the constraint before the token is generated
                 new Constraint\StrictValidAt(new FrozenClock(now()->toDateTimeImmutable()), DateInterval::createFromDateString('10 seconds')),
             );
+
             return $jwtConfig;
         });
 
@@ -90,6 +87,7 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
         if ($config['signature'] === 'ecdsa') {
             return call_user_func($func->getName() . '::create');
         }
+
         return app()->make($func->getName());
     }
 
@@ -98,10 +96,12 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
         switch (strtoupper(substr($signer->algorithmId(), 0, 2))) {
             case "HS":
                 return $config['key'];
+
                 break;
             case "RS":
             case "ES":
                 return new Key($config['public-key']);
+
                 break;
         }
     }
