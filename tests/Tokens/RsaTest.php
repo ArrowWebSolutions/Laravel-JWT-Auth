@@ -32,7 +32,7 @@ class RsaTest extends TestCase
 
     /**
      * @test
-     * @defineEnv useRsaSignature
+     * @define-env useRsaSignature
      */
     public function we_get_an_unauthorised_without_token()
     {
@@ -56,7 +56,7 @@ class RsaTest extends TestCase
 
     /**
      * @test
-     * @defineEnv useRsaSignature
+     * @define-env useRsaSignature
      */
     public function our_token_expires_correctly()
     {
@@ -70,7 +70,7 @@ class RsaTest extends TestCase
 
     /**
      * @test
-     * @defineEnv useRsaSignature
+     * @define-env useRsaSignature
      */
     public function we_cant_use_a_token_before_its_valid()
     {
