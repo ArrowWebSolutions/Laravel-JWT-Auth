@@ -65,7 +65,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Arrow\\JwtAuth\\ServiceProvider"
+                "Arrow\\JwtAuth\\JwtAuthenticationServiceProvider"
             ]
         }
     }
