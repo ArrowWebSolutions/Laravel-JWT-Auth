@@ -2,20 +2,15 @@
 
 namespace Arrow\JwtAuth;
 
-use Illuminate\Contracts\Auth\UserProvider as UserProviderContract;
+use Lcobucci\JWT\Configuration;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Lcobucci\JWT\Parser as JwtParser;
-use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
+use Illuminate\Contracts\Auth\UserProvider as UserProviderContract;
 
 class UserProvider implements UserProviderContract
 {
-    protected $jwtParser, $signer, $key;
-
-    public function __construct(JwtParser $jwtParser, Signer $signer, $key)
+    public function __construct(protected Configuration $jwtConfig)
     {
-        $this->key = $key;
-        $this->jwtParser = $jwtParser;
-        $this->signer = $signer;
     }
 
     /**
@@ -61,17 +56,15 @@ class UserProvider implements UserProviderContract
      */
     public function retrieveByCredentials(array $credentials)
     {
-        $jwt = $this->jwtParser->parse($credentials['jwt']);
+        $jwt = $this->jwtConfig->parser()->parse($credentials['jwt']);
 
-        if ($jwt->verify($this->signer, $this->key))
-        {
-            //maybe need to do some validation on the fields?
-            //
-            //valid jwt, so everything is good
-            return ((new User)->fromToken($jwt));
+        try {
+            $this->jwtConfig->validator()->assert($jwt, ...$this->jwtConfig->validationConstraints());
+        } catch (RequiredConstraintsViolated $e) {
+            return null;
         }
 
-        return null;
+        return (new User())->fromToken($jwt);
     }
 
     /**

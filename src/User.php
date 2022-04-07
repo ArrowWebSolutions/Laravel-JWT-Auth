@@ -2,21 +2,22 @@
 
 namespace Arrow\JwtAuth;
 
+use Lcobucci\JWT\UnencryptedToken;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Lcobucci\JWT\Token;
 
 class User implements Authenticatable
 {
-    public function fromToken(Token $token)
+    protected $sub;
+
+    public function fromToken(UnencryptedToken $token)
     {
-        foreach ($token->getClaims() as $claim)
-        {
-            $name = $claim->getName();
-            $this->$name = $claim->getValue();
+        foreach ($token->claims()->all() as $name => $value) {
+            $this->$name = $value;
         }
 
         return $this;
     }
+
     /**
      * Get the name of the unique identifier for the user.
      *
@@ -44,7 +45,7 @@ class User implements Authenticatable
      */
     public function getAuthPassword()
     {
-        return null;
+        return '';
     }
 
     /**
@@ -54,7 +55,7 @@ class User implements Authenticatable
      */
     public function getRememberToken()
     {
-        return null;
+        return '';
     }
 
     /**
@@ -74,6 +75,6 @@ class User implements Authenticatable
      */
     public function getRememberTokenName()
     {
-        return null;
+        return '';
     }
 }
