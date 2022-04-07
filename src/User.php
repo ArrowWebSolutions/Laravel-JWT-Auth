@@ -2,8 +2,8 @@
 
 namespace Arrow\JwtAuth;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\JWT\UnencryptedToken;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class User implements Authenticatable
 {

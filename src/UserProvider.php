@@ -2,10 +2,10 @@
 
 namespace Arrow\JwtAuth;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\UserProvider as UserProviderContract;
 use Lcobucci\JWT\Configuration;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Lcobucci\JWT\Validation\RequiredConstraintsViolated;
+use Illuminate\Contracts\Auth\UserProvider as UserProviderContract;
 
 class UserProvider implements UserProviderContract
 {

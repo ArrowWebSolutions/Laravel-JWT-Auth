@@ -4,8 +4,8 @@ namespace Arrow\JwtAuth\Contracts;
 
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
-use Lcobucci\JWT\Signer\Key;
 use Lcobucci\JWT\Validator;
+use Lcobucci\JWT\Signer\Key;
 
 interface JwtConfiguration
 {

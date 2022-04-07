@@ -2,10 +2,10 @@
 
 namespace Arrow\JwtAuth\Tests\Src;
 
-use Arrow\JwtAuth\Contracts\JwtConfiguration;
-use Arrow\JwtAuth\Tests\TestCase;
-use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer;
+use Lcobucci\JWT\Configuration;
+use Arrow\JwtAuth\Tests\TestCase;
+use Arrow\JwtAuth\Contracts\JwtConfiguration;
 
 class JwtAuthenticationServiceProviderRegisterTest extends TestCase
 {
