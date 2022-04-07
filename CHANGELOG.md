@@ -4,6 +4,10 @@ All notable changes to Laravel-JWT-Auth will be documented in this file.
 v0.1.0 - 2016-03-03
 initial release
 
+## v0.3.1 - 2022-04-07
+
+Bug fix with service provider autoloader
+
 ## v0.3.0 - 2022-04-07
 
 - Add compatibility with Laravel 9.x
