@@ -3,11 +3,17 @@
 namespace Arrow\JwtAuth;
 
 use Lcobucci\JWT\UnencryptedToken;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class User implements Authenticatable
+class User implements Authenticatable, Arrayable
 {
     protected array $attributes = [];
+
+    public function toArray()
+    {
+        return $this->attributes;
+    }
 
     public function fromToken(UnencryptedToken $token)
     {
