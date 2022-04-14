@@ -3,11 +3,17 @@
 namespace Arrow\JwtAuth;
 
 use Lcobucci\JWT\UnencryptedToken;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class User implements Authenticatable
+class User implements Authenticatable, Arrayable
 {
-    protected $sub;
+    protected array $attributes = [];
+
+    public function toArray()
+    {
+        return $this->attributes;
+    }
 
     public function fromToken(UnencryptedToken $token)
     {
@@ -25,7 +31,7 @@ class User implements Authenticatable
      */
     public function getAuthIdentifierName()
     {
-        return (string)$this->sub;
+        return 'sub';
     }
 
     /**
@@ -35,7 +41,7 @@ class User implements Authenticatable
      */
     public function getAuthIdentifier()
     {
-        return $this->getAuthIdentifierName();
+        return $this->{$this->getAuthIdentifierName()};
     }
 
     /**
@@ -76,5 +82,17 @@ class User implements Authenticatable
     public function getRememberTokenName()
     {
         return '';
+    }
+
+    public function __get($name)
+    {
+        $name = ($name === 'id' && ! isset($this->attributes[$name])) ? 'sub' : $name;
+
+        return $this->attributes[$name] ?? null;
+    }
+
+    public function __set($name, $value)
+    {
+        $this->attributes[$name] = $value;
     }
 }
