@@ -4,6 +4,14 @@ All notable changes to Laravel-JWT-Auth will be documented in this file.
 v0.1.0 - 2016-03-03
 initial release
 
+## v0.3.2 - 2022-04-14
+
+## What's Changed
+
+- ability to use user dot id by @ArronKing in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/4
+
+**Full Changelog**: https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/compare/v0.3.1...v0.3.2
+
 ## v0.3.1 - 2022-04-07
 
 Bug fix with service provider autoloader
