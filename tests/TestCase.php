@@ -5,7 +5,6 @@ namespace Arrow\JwtAuth\Tests;
 use phpseclib3\Crypt\RSA;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Lcobucci\JWT\Signer\Hmac;
 use Illuminate\Routing\Router;
 
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -62,14 +61,14 @@ MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7it/EKmcv9bfpcV1fBreLMRXxWpn
 d0wxa2iFruiI2tsEdGFTLTsyU+GeRqC7zN0aTnTQajarUylKJ3UWr/r1kg==
 -----END PUBLIC KEY-----
 EOK
-        , <<<EOK
+            , <<<EOK
 -----BEGIN EC PRIVATE KEY-----
 MHcCAQEEIBGpMoZJ64MMSzuo5JbmXpf9V4qSWdLIl/8RmJLcfn/qoAoGCCqGSM49
 AwEHoUQDQgAE7it/EKmcv9bfpcV1fBreLMRXxWpnd0wxa2iFruiI2tsEdGFTLTsy
 U+GeRqC7zN0aTnTQajarUylKJ3UWr/r1kg==
 -----END EC PRIVATE KEY-----
 EOK
-        , $app);
+            , $app);
     }
 
     protected function putKey($publicKey, $privateKey, $app)
