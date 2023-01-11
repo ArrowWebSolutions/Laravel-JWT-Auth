@@ -54,6 +54,7 @@ class TestCase extends Orchestra
 
     protected function useEcdsaSignature($app)
     {
+        $app['config']->set('jwt-auth.providers.jwt.hash', 'sha256');
         $app['config']->set('jwt-auth.providers.jwt.signature', 'ecdsa');
         $this->putKey(<<<EOK
 -----BEGIN PUBLIC KEY-----
