@@ -6,8 +6,8 @@ use phpseclib3\Crypt\RSA;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Router;
-use Orchestra\Testbench\TestCase as Orchestra;
 
+use Orchestra\Testbench\TestCase as Orchestra;
 use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
 
 class TestCase extends Orchestra
@@ -48,11 +48,13 @@ class TestCase extends Orchestra
     protected function useHmacSignature($app)
     {
         $app['config']->set('jwt-auth.providers.jwt.signature', 'hmac');
-        $app['config']->set('jwt-auth.providers.jwt.key', Str::random());
+        $app['config']->set('jwt-auth.providers.jwt.key', Str::random(40));
+        $app['config']->set('jwt-auth.providers.jwt.hash', 'sha256');
     }
 
     protected function useEcdsaSignature($app)
     {
+        $app['config']->set('jwt-auth.providers.jwt.hash', 'sha256');
         $app['config']->set('jwt-auth.providers.jwt.signature', 'ecdsa');
         $this->putKey(<<<EOK
 -----BEGIN PUBLIC KEY-----
@@ -60,14 +62,14 @@ MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE7it/EKmcv9bfpcV1fBreLMRXxWpn
 d0wxa2iFruiI2tsEdGFTLTsyU+GeRqC7zN0aTnTQajarUylKJ3UWr/r1kg==
 -----END PUBLIC KEY-----
 EOK
-        , <<<EOK
+            , <<<EOK
 -----BEGIN EC PRIVATE KEY-----
 MHcCAQEEIBGpMoZJ64MMSzuo5JbmXpf9V4qSWdLIl/8RmJLcfn/qoAoGCCqGSM49
 AwEHoUQDQgAE7it/EKmcv9bfpcV1fBreLMRXxWpnd0wxa2iFruiI2tsEdGFTLTsy
 U+GeRqC7zN0aTnTQajarUylKJ3UWr/r1kg==
 -----END EC PRIVATE KEY-----
 EOK
-        , $app);
+            , $app);
     }
 
     protected function putKey($publicKey, $privateKey, $app)
