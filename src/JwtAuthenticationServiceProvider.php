@@ -80,9 +80,6 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
     {
         $className = "\Lcobucci\JWT\Signer\\" . ucwords($config['signature']) . "\\" . ucwords($config['hash']);
         $func = new \ReflectionClass($className);
-        if ($config['signature'] === 'ecdsa') {
-            return call_user_func($func->getName() . '::create');
-        }
 
         return app()->make($func->getName());
     }
