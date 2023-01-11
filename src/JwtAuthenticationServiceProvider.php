@@ -31,7 +31,6 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
     public function boot()
     {
         parent::boot();
-
         //merge our config into auth
         $this->app['config']['auth'] = array_replace_recursive(
             $this->app['config']['auth'],

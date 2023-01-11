@@ -5,9 +5,10 @@ namespace Arrow\JwtAuth\Tests;
 use phpseclib3\Crypt\RSA;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Lcobucci\JWT\Signer\Hmac;
 use Illuminate\Routing\Router;
-use Orchestra\Testbench\TestCase as Orchestra;
 
+use Orchestra\Testbench\TestCase as Orchestra;
 use Arrow\JwtAuth\JwtAuthenticationServiceProvider;
 
 class TestCase extends Orchestra
@@ -48,7 +49,8 @@ class TestCase extends Orchestra
     protected function useHmacSignature($app)
     {
         $app['config']->set('jwt-auth.providers.jwt.signature', 'hmac');
-        $app['config']->set('jwt-auth.providers.jwt.key', Str::random());
+        $app['config']->set('jwt-auth.providers.jwt.key', Str::random(40));
+        $app['config']->set('jwt-auth.providers.jwt.hash', 'sha256');
     }
 
     protected function useEcdsaSignature($app)

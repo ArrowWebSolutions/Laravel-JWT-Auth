@@ -13,8 +13,8 @@ return [
             'model' => Arrow\JwtAuth\User::class,
             //can be hmac, rsa or ecdsa
             'signature' => 'rsa',
-            //the hash to use, can be sha265, sha384 or sha512
-            'hash' => 'sha256',
+            //the hash to use, can be sha256, sha384 or sha512
+            'hash' => 'sha512',
             //the key used for HMAC signatures
             'key' => 'my-super-secret',
             //path to public key
