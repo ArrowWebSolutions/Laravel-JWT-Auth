@@ -4,6 +4,15 @@ All notable changes to Laravel-JWT-Auth will be documented in this file.
 v0.1.0 - 2016-03-03
 initial release
 
+## v0.5.0 - 2023-04-03
+
+### What's Changed
+
+- Bump dependabot/fetch-metadata from 1.3.5 to 1.3.6 by @dependabot in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/11
+- See if we can get L10 installed by @ArronKing in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/12
+
+**Full Changelog**: https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/compare/v0.4.0...v0.5.0
+
 ## v0.4.0 - 2023-01-11
 
 ### What's Changed
