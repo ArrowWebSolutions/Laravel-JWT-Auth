@@ -78,4 +78,17 @@ class UserProvider implements UserProviderContract
     {
         throw new \Exception("Not implemented");
     }
+
+    /**
+     * Rehash the user's password if required and supported.
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @param  array  $credentials
+     * @param  bool  $force
+     * @return void
+     */
+    public function rehashPasswordIfRequired(Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false)
+    {
+        throw new \Exception("Not implemented");
+    }
 }

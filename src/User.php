@@ -84,6 +84,16 @@ class User implements Authenticatable, Arrayable
         return '';
     }
 
+    /**
+     * Get the name of the password attribute for the user.
+     *
+     * @return string
+     */
+    public function getAuthPasswordName()
+    {
+        return '';
+    }
+
     public function __get($name)
     {
         $name = ($name === 'id' && ! isset($this->attributes[$name])) ? 'sub' : $name;
