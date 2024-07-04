@@ -4,6 +4,7 @@ namespace Arrow\JwtAuth;
 
 use DateInterval;
 use Lcobucci\JWT\Signer;
+use Illuminate\Support\Str;
 use Lcobucci\Clock\FrozenClock;
 use Lcobucci\JWT\Configuration;
 use Illuminate\Support\Facades\Auth;
@@ -49,8 +50,8 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
             } else {
                 $jwtConfig = Configuration::forAsymmetricSigner(
                     $signer,
-                    file_exists($config['private-key']) ? InMemory::file($config['private-key']) : InMemory::empty(),
-                    file_exists($config['public-key']) ? InMemory::file($config['public-key']) : InMemory::empty()
+                    file_exists($config['private-key']) ? InMemory::file($config['private-key']) : InMemory::plainText(Str::random()),
+                    file_exists($config['public-key']) ? InMemory::file($config['public-key']) : InMemory::plainText(Str::random()),
                 );
             }
 
