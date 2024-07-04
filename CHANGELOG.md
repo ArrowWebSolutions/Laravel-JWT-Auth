@@ -4,6 +4,14 @@ All notable changes to Laravel-JWT-Auth will be documented in this file.
 v0.1.0 - 2016-03-03
 initial release
 
+## v0.6.1 - 2024-07-04
+
+### What's Changed
+
+* Remove package nesbot/carbon as not used by @ArronKing in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/20
+
+**Full Changelog**: https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/compare/v0.6.0...v0.6.1
+
 ## v0.6.0 - 2024-07-04
 
 ### What's Changed
