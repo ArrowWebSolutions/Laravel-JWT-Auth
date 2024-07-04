@@ -13,6 +13,7 @@ use Spatie\LaravelPackageTools\Package;
 use Arrow\JwtAuth\Commands\Publish\Config;
 use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Illuminate\Support\Str;
 
 class JwtAuthenticationServiceProvider extends PackageServiceProvider
 {
@@ -49,8 +50,8 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
             } else {
                 $jwtConfig = Configuration::forAsymmetricSigner(
                     $signer,
-                    file_exists($config['private-key']) ? InMemory::file($config['private-key']) : InMemory::plainText(''),
-                    file_exists($config['public-key']) ? InMemory::file($config['public-key']) : InMemory::plainText(''),
+                    file_exists($config['private-key']) ? InMemory::file($config['private-key']) : InMemory::plainText(Str::random()),
+                    file_exists($config['public-key']) ? InMemory::file($config['public-key']) : InMemory::plainText(Str::random()),
                 );
             }
 
