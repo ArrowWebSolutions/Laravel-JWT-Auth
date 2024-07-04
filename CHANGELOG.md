@@ -4,6 +4,20 @@ All notable changes to Laravel-JWT-Auth will be documented in this file.
 v0.1.0 - 2016-03-03
 initial release
 
+## v0.6.0 - 2024-07-04
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 1.3.6 to 1.4.0 by @dependabot in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/13
+* Bump dependabot/fetch-metadata from 1.4.0 to 1.5.1 by @dependabot in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/14
+* Bump dependabot/fetch-metadata from 1.5.1 to 1.6.0 by @dependabot in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/15
+* See if this upgrades to Laravel 11 by @ArronKing in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/18
+* Bump ramsey/composer-install from 1 to 3 by @dependabot in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/19
+* Bump stefanzweifel/git-auto-commit-action from 4 to 5 by @dependabot in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/17
+* Bump actions/checkout from 3 to 4 by @dependabot in https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/pull/16
+
+**Full Changelog**: https://github.com/ArrowWebSolutions/Laravel-JWT-Auth/compare/v0.5.0...v0.6.0
+
 ## v0.5.0 - 2023-04-03
 
 ### What's Changed
