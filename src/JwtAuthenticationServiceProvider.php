@@ -4,6 +4,7 @@ namespace Arrow\JwtAuth;
 
 use DateInterval;
 use Lcobucci\JWT\Signer;
+use Illuminate\Support\Str;
 use Lcobucci\Clock\FrozenClock;
 use Lcobucci\JWT\Configuration;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,6 @@ use Spatie\LaravelPackageTools\Package;
 use Arrow\JwtAuth\Commands\Publish\Config;
 use Arrow\JwtAuth\Contracts\JwtConfiguration;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Illuminate\Support\Str;
 
 class JwtAuthenticationServiceProvider extends PackageServiceProvider
 {
