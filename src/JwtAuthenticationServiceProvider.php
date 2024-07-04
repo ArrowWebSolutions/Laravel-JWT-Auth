@@ -49,8 +49,8 @@ class JwtAuthenticationServiceProvider extends PackageServiceProvider
             } else {
                 $jwtConfig = Configuration::forAsymmetricSigner(
                     $signer,
-                    file_exists($config['private-key']) ? InMemory::file($config['private-key']) : InMemory::empty(),
-                    file_exists($config['public-key']) ? InMemory::file($config['public-key']) : InMemory::empty()
+                    file_exists($config['private-key']) ? InMemory::file($config['private-key']) : InMemory::plainText(''),
+                    file_exists($config['public-key']) ? InMemory::file($config['public-key']) : InMemory::plainText(''),
                 );
             }
 
